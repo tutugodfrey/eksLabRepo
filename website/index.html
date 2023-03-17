@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Building and deploying a containerized application with AWS Elastic Kubernetes Service (EKS)</title>
+        <style>
+            @font-face {
+                font-family: AmazonEmber;
+                src: url(font/AmazonEmber_Lt.ttf);
+            }
+            div {
+                font-family: AmazonEmber;
+            }
+            h1 {
+                color: #505050;
+                font-family: AmazonEmber;
+                font-size: 200%;
+            }
+            h2 {
+                color: gray;
+                font-family: AmazonEmber;
+                font-size: 130%;
+            }
+            p  {
+                color: gray;
+                font-family: AmazonEmber;
+                font-size: 120%;
+            }
+        </style>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script type="text/javascript">
+
+        var metadata =  function () {
+            var response = $.ajax({
+                type: "GET",
+                contentType: "application/json",
+                url: 'metadata.json',
+                dataType: "json",
+                success: function (json) {
+                    response = json
+                    podId = json.podId
+                    document.getElementById("podId").innerHTML = 'Kubernetes pod ID: '+podId;
+                    console.log(response)
+                    console.log(podId)
+                }
+            });
+            return response;
+        }();
+
+        var metadata2 =  function () {
+            var response = $.ajax({
+                type: "GET",
+                contentType: "application/json",
+                url: 'metadata2.json',
+                dataType: "json",
+                success: function (json) {
+                    response = json
+                    accId = json.awsAccId
+                    clusterName = json.name
+                    clusterVersion = json.version
+                    creationTime = json.time
+                    instanceType = json.type
+                    document.getElementById("accId").innerHTML = 'AWS Account: '+accId;
+                    document.getElementById("clusterName").innerHTML = 'EKS cluster name: '+clusterName;
+                    document.getElementById("clusterVersion").innerHTML = 'Kubernetes version: '+clusterVersion;
+                    document.getElementById("creationTime").innerHTML = 'Cluster creation time: '+creationTime;
+                    document.getElementById("instanceType").innerHTML = 'Worker nodes instance type: '+instanceType;
+                    console.log(response)
+                    console.log(accId)
+                }
+            });
+            return response;
+        }();
+
+    </script>
+    </head>
+    <body>
+
+    <!-- Content -->
+
+    <h1>Building and deploying a containerized application with Amazon EKS</h1>
+    <hr style="width:60%;text-align:left;margin-left:0">
+    <h2 id="podId"></h2>
+    <h2 id="accId"></h2>
+    <h2 id="clusterName"></h2>
+    <h2 id="clusterVersion"></h2>
+    <h2 id="creationTime"></h2>
+    <h2 id="instanceType"></h2>
+    <h1></h1>
+    <img src="images/undraw/aws-training.png" width="250">
+  </body>
+</html>

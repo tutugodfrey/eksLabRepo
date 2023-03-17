@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: containers-lab
+  name: eks-lab-deploy
+  labels:
+    app: eks-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: lab-app
+  template:
+    metadata:
+      labels:
+        app: lab-app
+    spec:
+      containers:
+      - name: website
+        image: $ECR_REPO_URI_WEBSITE:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /var/metadata
+          name: metadata-vol
+      - name: sidecar
+        image: $ECR_REPO_URI_SIDECAR:latest
+        volumeMounts:
+        - mountPath: /var/metadata
+          name: metadata-vol
+      volumes:
+      - name: metadata-vol
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lab-service
+  namespace: containers-lab
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  type: NodePort
+  selector:
+    app: lab-app
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: containers-lab
+  name: lab-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    kubernetes.io/ingress.class: alb
+spec:
+  rules:
+    - http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: lab-service
+              port:
+                number: 80
